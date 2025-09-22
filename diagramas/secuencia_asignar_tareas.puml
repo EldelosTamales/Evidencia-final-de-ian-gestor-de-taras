@@ -1,0 +1,22 @@
+@startuml Secuencia_Asignar_Tareas
+title Secuencia - Asignar Tareas (Árbol Empleados)
+actor Usuario
+participant UI as "UI - SistemaGestionTareas"
+participant Controller as "Controller"
+participant Arbol as "ArbolEmpleados"
+participant Empleado as "Empleado (hoja)"
+
+Usuario -> UI: Click 'Asignar Tareas (Divide y Vencerás)'
+UI -> Controller: asignarTareasDivideYVencer(tareas)
+activate Controller
+Controller -> Arbol: asignarDivideYVencer(tareas)
+activate Arbol
+Arbol -> Empleado: distribuirSubtareas(hoja,tareasSubset)
+Empleado --> Arbol: confirmadoAsignacion
+Arbol --> Controller: asignaciones(list)
+deactivate Arbol
+Controller -> UI: mostrarAsignaciones(asignaciones)
+deactivate Controller
+UI -> Usuario: mostrarResultadoAsignacion()
+
+@enduml

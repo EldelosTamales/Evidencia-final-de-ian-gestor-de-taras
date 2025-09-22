@@ -1,0 +1,48 @@
+@startuml Diagrama_Caso_Uso
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Usuario" as Usuario
+
+package "Sistema de Gestión de Tareas" {
+    usecase "Iniciar Aplicación" as UC1
+    usecase "Crear/Editar Tarea" as UC2
+    usecase "Eliminar Tarea" as UC3
+    usecase "Ver Tareas (vistas)" as UC4
+    usecase "Gestionar Dependencias" as UC5
+    usecase "Detectar Ciclos en Grafo" as UC6
+    usecase "Obtener Orden Topológico" as UC7
+    usecase "Ver Cola de Prioridad" as UC8
+    usecase "Reconstruir Índices" as UC9
+    usecase "Recargar desde MongoDB" as UC10
+    usecase "Asignar Tareas (Árbol Empleados)" as UC11
+    usecase "Generar Reportes / Estado" as UC12
+    usecase "Cerrar Aplicación" as UC13
+}
+
+Usuario --> UC1
+Usuario --> UC2
+Usuario --> UC3
+Usuario --> UC4
+Usuario --> UC5
+Usuario --> UC6
+Usuario --> UC7
+Usuario --> UC8
+Usuario --> UC9
+Usuario --> UC10
+Usuario --> UC11
+Usuario --> UC12
+Usuario --> UC13
+
+note left of UC2
+  Crear/Editar Tarea incluye: nombre obligatorio,
+  descripción opcional, departamento, urgencia,
+  fecha de entrega, duración y dependencias.
+end note
+
+note right of UC9
+  Utilidad administrativa en la pestaña "Avanzado"
+  para reconstruir índices en memoria (mapas y cola).
+end note
+
+@enduml

@@ -1,0 +1,62 @@
+@startuml
+@startuml Secuencia_Crear_Tarea
+title Secuencia - Crear tarea (tipo: Urgente / Programada / Departamento)
+actor Usuario
+participant MainApp as "App (main)"
+participant UI as "UI - SistemaGestionTareas"
+participant Controller as "Controller"
+participant Pila as "PilaTareas"
+participant Cola as "ColaTareas"
+participant Lista as "ListaTareas"
+participant Grafo as "GrafoTareas"
+participant DB as "MongoDB"
+
+Usuario -> MainApp: Iniciar y abrir ventana
+MainApp -> UI: mostrarFormularioNuevaTarea()
+UI -> Usuario: pedir datos (nombre, descripcion, departamento, urgencia, fechaEntrega, dependencias)
+Usuario -> UI: enviarDatos
+UI -> Controller: crearTarea(datos)
+activate Controller
+Controller -> Controller: validarDatos(datos)
+Controller -> Controller: generarId(tarea)
+Controller -> Controller: construirObjetoTarea(datos)
+note right of Controller: Se crea Tarea {id,nombre,desc,dept,urgencia,fecha,dur}
+
+alt si urgencia == URGENTE
+    Controller -> Pila: push(tarea)
+    activate Pila
+    Pila --> Controller: confirmado
+    deactivate Pila
+else si tipo == PROGRAMADA
+    Controller -> Cola: add(tarea)
+    activate Cola
+    Cola --> Controller: confirmado
+    deactivate Cola
+else si tipo == DEPARTAMENTO
+    Controller -> Lista: insert(tarea)
+    activate Lista
+    Lista --> Controller: confirmado
+    deactivate Lista
+end
+
+Controller -> Grafo: addNodo(tarea.id)
+activate Grafo
+alt si dependencias != empty
+    Grafo -> Grafo: addAristas(desde->hasta)
+end
+Grafo --> Controller: grafo actualizado
+deactivate Grafo
+
+Controller -> DB: guardarTareaDocumento(tarea)
+activate DB
+DB --> Controller: OK (insertId)
+deactivate DB
+
+Controller -> Controller: indexarTareaEnMapas(tarea)
+Controller -> UI: actualizarTablas()
+deactivate Controller
+
+UI -> Usuario: mostrarMensaje("Tarea creada correctamente: " + tarea.id)
+
+@enduml
+	Grafo -> Grafo: addAristas(desde->hasta)

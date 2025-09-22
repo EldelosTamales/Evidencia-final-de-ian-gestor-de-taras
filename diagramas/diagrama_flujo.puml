@@ -1,0 +1,139 @@
+@startuml
+title Diagrama de Flujo - Sistema de Gestión de Tareas
+start
+:Iniciar aplicación;
+:Inicializar estructuras (pila, cola, lista, colaPrioridad, mapas);
+:Conectar a MongoDB;
+:Configurar UI y cargar datos;
+
+if (Usuario crea tarea?) then (sí)
+  :Mostrar diálogo nueva tarea;
+  :Crear Tarea y añadir a estructura correspondiente;
+  :Indexar tarea y guardar en MongoDB;
+  :Actualizar tablas;
+else (no)
+endif
+
+if (Usuario usa Avanzado?) then (sí)
+  fork
+    :Detectar Ciclos -> ejecutar grafo.tieneCiclo();
+@startuml Diagrama_Flujo_Principal
+title Diagrama de Flujo - Sistema de Gestión de Tareas
+start
+:Iniciar aplicación;
+:Inicializar estructuras (pila, cola, lista, colaPrioridad, mapas);
+:Conectar a MongoDB;
+:Configurar UI y cargar datos;
+
+if (Usuario crea tarea?) then (sí)
+    :Mostrar diálogo nueva tarea;
+    :Crear Tarea y añadir a estructura correspondiente;
+    :Indexar tarea y guardar en MongoDB;
+    :Actualizar tablas;
+else (no)
+endif
+
+if (Usuario usa Avanzado?) then (sí)
+    fork
+        :Detectar Ciclos -> ejecutar grafo.tieneCiclo();
+    fork again
+        :Orden Topológico -> ejecutar grafo.ordenTopologico();
+    fork again
+        :Reconstruir Índices -> reconstruirIndicesDesdeMemoria();
+    end fork
+    :Mostrar resultados en UI;
+endif
+
+stop
+@enduml
+- database = "techsolutions"
+- collection = "tareas"
+end note
+
+:Configurar interfaz gráfica;
+note right
+- Crear JTabbedPane con 4 pestañas
+- Inicializar tablas y botones
+end note
+
+:Cargar datos desde MongoDB;
+note right
+- Cargar tareas urgentes (tipo="urgente")
+- Cargar tareas programadas (tipo="programada")
+- Cargar tareas departamento (tipo="departamento")
+end note
+
+:Actualizar todas las tablas;
+
+:Mostrar ventana principal;
+
+repeat
+    :Usuario interactúa con la aplicación;
+
+    if (¿Qué acción realiza?) then (Agregar tarea urgente)
+        :Mostrar diálogo nueva tarea;
+        :Crear objeto Tarea;
+        :Push a pilaTareasUrgentes;
+        :Guardar en MongoDB (tipo="urgente");
+        :Actualizar tabla pila;
+
+    elseif (Eliminar tarea urgente)
+        :Pop de pilaTareasUrgentes;
+        :Eliminar de MongoDB;
+        :Actualizar tabla pila;
+
+    elseif (Ver última tarea urgente)
+        :Peek de pilaTareasUrgentes;
+        :Mostrar información en JOptionPane;
+
+    elseif (Agregar tarea programada)
+        :Mostrar diálogo nueva tarea;
+        :Crear objeto Tarea;
+        :Add a colaTareasProgramadas;
+        :Guardar en MongoDB (tipo="programada");
+        :Actualizar tabla cola;
+
+    elseif (Eliminar tarea programada)
+        :Remove de colaTareasProgramadas;
+        :Eliminar de MongoDB;
+        :Actualizar tabla cola;
+
+    elseif (Ver primera tarea programada)
+        :Peek de colaTareasProgramadas;
+        :Mostrar información en JOptionPane;
+
+    elseif (Agregar tarea departamento)
+        :Mostrar diálogo nueva tarea;
+        :Crear objeto Tarea;
+        :Add a listaTareasDepartamento;
+        :Guardar en MongoDB (tipo="departamento");
+        :Actualizar tabla lista;
+
+    elseif (Eliminar tarea departamento)
+        :Obtener tarea seleccionada;
+        :Remove de listaTareasDepartamento;
+        :Eliminar de MongoDB;
+        :Actualizar tabla lista;
+
+    elseif (Buscar tareas departamento)
+        :Obtener texto de búsqueda;
+        :Filtrar listaTareasDepartamento;
+        :Actualizar tabla lista con resultados;
+
+    elseif (Actualizar vista general)
+        :Limpiar tabla general;
+        :Agregar todas las tareas de las 3 estructuras;
+        :Mostrar tipo de cada tarea;
+
+    else (Cerrar aplicación)
+        :Cerrar conexión MongoDB;
+        stop
+    endif
+
+repeat while (¿Continuar usando la aplicación?)
+
+:Fin de la aplicación;
+
+stop
+
+@enduml

@@ -1,0 +1,21 @@
+@startuml Secuencia_Orden_Topologico
+title Secuencia - Orden Topológico
+actor Usuario
+participant UI as "Sistema (UI)"
+participant Controller as "SistemaGestionTareas"
+participant Grafo as "GrafoTareas"
+participant DB as "MongoDB"
+
+Usuario -> UI: Click 'Orden Topológico'
+UI -> Controller: solicitarOrdenTopologico()
+activate Controller
+Controller -> Grafo: ordenTopologico()
+activate Grafo
+Grafo -> Grafo: ejecutar algoritmo de Kahn
+Grafo --> Controller: listaOrdenada (IDs)
+deactivate Grafo
+Controller -> UI: mostrarListaOrdenada(lista)
+deactivate Controller
+UI -> Usuario: Mostrar orden topológico de tareas
+
+@enduml

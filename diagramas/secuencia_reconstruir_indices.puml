@@ -1,0 +1,27 @@
+@startuml Secuencia_Reconstruir_Indices
+title Secuencia - Reconstruir Índices
+actor Usuario
+participant UI as "UI - SistemaGestionTareas"
+participant Controller as "Controller"
+participant Memoria as "Colecciones en Memoria"
+participant Grafo as "GrafoTareas"
+participant Mapas as "Mapas/Indices"
+
+Usuario -> UI: Click 'Reconstruir Índices'
+UI -> Controller: reconstruirIndicesDesdeMemoria()
+activate Controller
+Controller -> Memoria: obtenerTodasColecciones()
+activate Memoria
+Memoria --> Controller: listas (pila, cola, lista)
+deactivate Memoria
+Controller -> Mapas: limpiarIndices()
+Controller -> Grafo: crearNuevoGrafo()
+Controller -> Controller: iterarSobreColeccionesYIndexar()
+Controller -> Mapas: put(id, tarea)
+Controller -> Grafo: addNodo(id)
+Controller -> Grafo: addAristas(segunDependencias)
+Controller --> UI: resultado(reconstruccionOK)
+deactivate Controller
+UI -> Usuario: mostrarMensaje('Reconstrucción completada')
+
+@enduml
