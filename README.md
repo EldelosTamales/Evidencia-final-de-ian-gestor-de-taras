@@ -19,6 +19,13 @@ Recursos y diagramas
 - Diagramas PlantUML y PNG: `diagramas/`
 - Documentación: `DOCUMENTACION_PROYECTO.txt`
 
+Diagrams (thumbnails):
+
+[![Caso de uso](diagramas/Diagrama_Caso_Uso.png)](diagramas/Diagrama_Caso_Uso.png)
+[![Flujo principal](diagramas/Diagrama_Flujo_Principal.png)](diagramas/Diagrama_Flujo_Principal.png)
+
+Más diagramas están disponibles en `diagramas/`.
+
 Contacto
 - Repo original y propietario: https://github.com/EldelosTamales/Evidencia-final-de-ian-gestor-de-taras
 
